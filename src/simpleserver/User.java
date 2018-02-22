@@ -22,7 +22,7 @@ public class User {
         System.out.println(userid);
     }
 
-    private  int userid;
+    private int userid;
 
     public User(){
         allUsers.add(this);
