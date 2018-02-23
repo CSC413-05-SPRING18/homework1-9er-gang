@@ -1,37 +1,40 @@
 package simpleserver;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+import com.google.gson.*;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 
 
 class SimpleServer {
 
     public static void main(String[] args) throws IOException {
-        ServerSocket ding;
-        Socket dong = null;
-        String resource = null;
-
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         BufferedReader br;
         String jsonString = null;
         User[] users = null;
         Post[] posts = null;
         try {
-            br = new BufferedReader(new FileReader("src/simpleserver/data.json"));
+            br = new BufferedReader(new FileReader("src/data.json"));
             JsonParser jsonParser = new JsonParser();
             JsonObject obj = jsonParser.parse(br).getAsJsonObject();
             users = gson.fromJson(obj.get("users"), User[].class);
-            User.loadAll();
-            jsonString = gson.toJson(users) + gson.toJson(posts);
+            posts= gson.fromJson(obj.get("posts"), Post[].class);
+
+            jsonString = gson.toJson(users)+gson.toJson(posts);
+
+//      System.out.println(jsonString);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        ServerSocket ding;
+        Socket dong = null;
+        String resource = null;
         try {
             ding = new ServerSocket(1299);
             System.out.println("Opened socket " + 1299);
@@ -55,9 +58,6 @@ class SimpleServer {
                     System.out.println(line);
                     // read only headers
                     line = in.readLine();
-                    if(line == "user"){
-                        System.out.println("Hello World");
-                    }
                     while (line != null && line.trim().length() > 0) {
                         int index = line.indexOf(": ");
                         if (index > 0) {
@@ -85,9 +85,7 @@ class SimpleServer {
 
 
                 // Body of our response
-                Response response = new Response();
-                response.data = users;
-                writer.println(gson.toJson(response));
+                writer.println(jsonString);
 
                 dong.close();
             }

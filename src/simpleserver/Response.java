@@ -1,20 +1,13 @@
 package simpleserver;
 
 public class Response {
-    String status = "OK";
-    public User[] data;
-    int entries = 7;
+    User[] users;
+    Post[] posts;
 
-    public Response(){
+    public void setUsers(User[] users){
+        this.users = users;
     }
-    public Response(String status, int entries, User[] data){
-        this.status = status;
-        this.entries = entries;
-        this.data = data;
+    public void setPosts(Post[] posts){
+        this.posts = posts;
     }
-
-    public String getStatusString(){
-        return this.status;
-    }
-
 }
