@@ -1,42 +1,12 @@
 package simpleserver;
 
-//public class Post {
-//
-//    private int postid;
-//    private int userid;
-//    private String data;
-//
-//    public int getPostid() {
-//        return postid;
-//    }
-//
-//    public void setPostid(int postid) {
-//        this.postid = postid;
-//    }
-//
-//    public int getUserid() {
-//        return userid;
-//    }
-//
-//    public void setUserid(int userid) {
-//        this.userid = userid;
-//    }
-//
-//    public String getData() {
-//        return data;
-//    }
-//
-//    public void setData(String data) {
-//        this.data = data;
-//    }
-//}
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Post {
+
 
     private  static Map<Integer, Post> useridDict = new HashMap<>();
     private  static Map<Integer, Post> postidDict = new HashMap<Integer, Post>();
@@ -81,11 +51,30 @@ public class Post {
 
     public void register(){
         postidDict.put(postid, this);
+
+
+    public User(){
+        allUsers.add(this);
+    }
+
+    public User(String username, int userid){
+        this.username = username;
+        this.userid = userid;
+        useridDict.put(userid, this);
+    }
+
+    public static User getUser(int userid){
+        return useridDict.get(userid);
+    }
+
+    public void register(){
+        useridDict.put(userid, this);
     }
 
     public static void loadAll(){
         for(int i = 0 ; i < allUsers.size(); i++){
             allUsers.get(i).register();
+
         }
     }
 }
