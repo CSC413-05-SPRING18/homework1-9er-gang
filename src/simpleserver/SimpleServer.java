@@ -1,40 +1,45 @@
 package simpleserver;
 
+import DataModel.Post;
+import DataModel.User;
+import Processor.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-import com.google.gson.*;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 
 
 class SimpleServer {
 
     public static void main(String[] args) throws IOException {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        BufferedReader br;
-        String jsonString = null;
+        ServerSocket ding;
+        Socket dong = null;
+        String resource = null;
+        String mainRequestLine = null;
         User[] users = null;
         Post[] posts = null;
+
+        Gson gson = new Gson();
+        BufferedReader br;
         try {
             br = new BufferedReader(new FileReader("src/data.json"));
             JsonParser jsonParser = new JsonParser();
             JsonObject obj = jsonParser.parse(br).getAsJsonObject();
+
             users = gson.fromJson(obj.get("users"), User[].class);
-            posts= gson.fromJson(obj.get("posts"), Post[].class);
+            posts = gson.fromJson(obj.get("posts"), Post[].class);
 
-            jsonString = gson.toJson(users)+gson.toJson(posts);
+            for(int i = 0; i < users.length; i ++){
+                users[i].register();
+            }
+            User.setAll(users);
 
-//      System.out.println(jsonString);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.exit(1);
         }
-        ServerSocket ding;
-        Socket dong = null;
-        String resource = null;
+
         try {
             ding = new ServerSocket(1299);
             System.out.println("Opened socket " + 1299);
@@ -56,6 +61,8 @@ class SimpleServer {
                     String line = in.readLine();
                     System.out.println("----------REQUEST START---------");
                     System.out.println(line);
+                    mainRequestLine = line;
+
                     // read only headers
                     line = in.readLine();
                     while (line != null && line.trim().length() > 0) {
@@ -83,9 +90,13 @@ class SimpleServer {
                 writer.println("Content-type: application/json");
                 writer.println("");
 
+                // Do our work here
+                String lineParts[] = mainRequestLine.split(" ");
+                String resourceString = lineParts[1];
 
+                Processor processor = ProcessorFactory.getProcessor(resourceString);
                 // Body of our response
-                writer.println(jsonString);
+                writer.println(processor.process());
 
                 dong.close();
             }
