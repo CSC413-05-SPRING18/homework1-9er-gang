@@ -31,7 +31,7 @@ public class PostProcessor extends Processor {
                 responseBuilder.setData(post);
             }
             else if(argName.equals("postid")){
-                Post post = Post.getPostByUserId(id);
+                Post post = Post.getPostByPostId(id);
                 // if no user maybe set status to error
                 responseBuilder.setStatus("OK");
                 responseBuilder.setData(post);

@@ -25,6 +25,10 @@ public class Post implements IData {
         return userPost;
     }
 
+    public static Post getPostByPostId(int postid) {
+        return Post.postByPostId.get(postid);
+    }
+
     public static void setAll(Post[] allPost) {
         Post.allPosts = allPost;
     }
