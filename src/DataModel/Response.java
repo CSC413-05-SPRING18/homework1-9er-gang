@@ -1,7 +1,5 @@
 package DataModel;
 
-import com.sun.xml.internal.bind.v2.model.core.ID;
-
 public class Response {
 
   public String status;

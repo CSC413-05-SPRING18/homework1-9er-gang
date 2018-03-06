@@ -36,6 +36,11 @@ class SimpleServer {
             }
             User.setAll(users);
 
+            for(int i = 0; i < posts.length; i++){
+                posts[i].register();
+            }
+            Post.setAll(posts);
+
         } catch (FileNotFoundException e) {
             System.exit(1);
         }

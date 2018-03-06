@@ -21,6 +21,7 @@ public class ProcessorFactory {
         break;
       default:
         //later add error code?
+        processor = new ErrorProcessor(queryString);
         break;
     }
     return processor;
